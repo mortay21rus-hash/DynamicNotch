@@ -74,6 +74,9 @@ def main() -> None:
     if info.get("CFBundleVersion") != BUILD or info.get("LSMinimumSystemVersion") != "26.0":
         raise SystemExit("Unexpected build identity or deployment target")
     binary = built / "Contents/MacOS/DynamicNotch"
+    # Remove linker debug-symbol references to object and swiftmodule paths.
+    # The separately generated dSYM stays local and is not part of the ZIP.
+    run(["strip", "-S", str(binary)])
     if str(Path.home()).encode() in binary.read_bytes():
         raise SystemExit("The app binary still contains the build user's home path")
 
