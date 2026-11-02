@@ -57,7 +57,7 @@
 The app is built with SwiftUI and AppKit, so the notch window, settings UI, and event handling feel
 like part of macOS rather than a web-style overlay.
 
-The difference between this project and others is that it is built on its own engine, and not taken from other ready-made repositories. It completely copies the logic, animations, and behavior of a real Dynamic Island on an iPhone, unlike other projects. 
+The difference between this project and others is that it is built on its own engine, and not taken from other ready-made repositories. It completely copies the logic, animations, and behavior of a real Dynamic Island on an iPhone, unlike other projects.
 
 The main goal is to make the project as native as possible, both in terms of design and interaction.
 
