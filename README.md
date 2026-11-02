@@ -1,171 +1,84 @@
-<p align="center">
-  <img src="DynamicNotch/Resources/Assets.xcassets/AppIcon.appiconset/logo256.png" alt="DynamicNotch logo" width="96" />
-</p>
+# DynamicNotch — мой форк с инструментами и жестами
 
-<h1 align="center">DynamicNotch</h1>
+[English](README.en.md) · [Скачать сборку](https://github.com/mortay21rus-hash/DynamicNotch/releases/tag/community-1.6.3-25.6.2) · [Что изменилось для разработчиков](docs/UPSTREAM_NOTES.md)
 
-<p align="center">
-  <strong>Turn the MacBook notch into a living native surface.</strong>
-</p>
+Я пользуюсь DynamicNotch на Mac и хотел, чтобы через остров можно было быстро сделать скриншот, посчитать что-нибудь, изменить громкость монитора и управлять видео. В этом форке собраны эти изменения, русификация и исправления жестов.
 
-<p align="center">
-  DynamicNotch is a native macOS app for notched MacBooks that turns the notch into a live system surface for media,
-  downloads, AirDrop, timers, screen recording, connectivity events, lock-screen transitions, and custom hardware HUDs.
-</p>
+Публикую исходники и сборку, чтобы авторы оригинала могли посмотреть реализацию, воспроизвести исправленные ошибки и при желании перенести изменения в основной проект.
 
-<p align="center">
-  <a href="https://t.me/Dynamic_Notch">
-    <img src="https://img.shields.io/badge/Telegram-Join%20Channel-26A5E4?style=for-the-badge&logo=telegram&logoColor=white&labelColor=26A5E4" alt="Join the Telegram channel" />
-  </a>
-  <a href="mailto:evgeniy.petrukovich@icloud.com?subject=A%20question%20about%20Dynamic%20Notch">
-    <img src="https://img.shields.io/badge/Email-Contact%20Me-0A84FF?style=for-the-badge&logo=icloud&logoColor=white&labelColor=0A84FF" alt="Send an email about DynamicNotch" />
-  </a>
-  <a href="https://t.me/id10101101">
-    <img src="https://img.shields.io/badge/Telegram-Contact%20Me-229ED9?style=for-the-badge&logo=telegram&logoColor=white&labelColor=229ED9" alt="Contact me on Telegram" />
-  </a>
-</p>
+**Это неофициальная изменённая версия [jackson-storm/DynamicNotch](https://github.com/jackson-storm/DynamicNotch), а не официальный релиз.** Основа — 1.6.3, коммит [`deacd0f`](https://github.com/jackson-storm/DynamicNotch/commit/deacd0f4275c73ae5d3328491d23d0e0dc0f6970). Изменения опубликованы 2 ноября 2026 года. Лицензия оригинала, **GNU GPL v3**, сохранена.
 
-<p align="center">
-  <a href="https://github.com/jackson-storm/DynamicNotch/releases">
-    <img src="https://img.shields.io/github/downloads/jackson-storm/DynamicNotch/total?style=for-the-badge&label=Downloads&logo=github&logoColor=white&color=28a745" alt="GitHub downloads" />
-  </a>
-  <a href="https://github.com/jackson-storm/DynamicNotch/releases/latest">
-    <img src="https://img.shields.io/github/v/release/jackson-storm/DynamicNotch?style=for-the-badge&label=Latest%20Release&logo=github&logoColor=white&color=0a84ff" alt="Latest release" />
-  </a>
-  <a href="LICENSE">
-    <img src="https://img.shields.io/github/license/jackson-storm/DynamicNotch?style=for-the-badge&label=License&color=blueviolet" alt="License" />
-  </a>
-  <img src="https://img.shields.io/badge/macOS-14.6%2B-red?style=for-the-badge&logo=apple&logoColor=white" alt="macOS 14.6 or later" />
-</p>
+## Что я добавил
 
-<p align="center">
-  <a href="https://boosty.to/jacksonstormdev">
-    <img src="https://img.shields.io/badge/Boosty-Support-F58220?style=for-the-badge&logo=boosty&logoColor=white" alt="Support on Boosty" />
-  </a>
-  <a href="https://www.donationalerts.com/r/jacksonstormdev">
-    <img src="https://img.shields.io/badge/DonationAlerts-Donate-FF9A00?style=for-the-badge&logo=donationalerts&logoColor=white" alt="Donate via Donation Alerts" />
-  </a>
-</p>
+| Возможность | Как работает |
+| --- | --- |
+| Скриншоты | Весь экран или выделенная область. Остров и его окна скрываются перед съёмкой. Картинка попадает в буфер обмена в PNG/TIFF — дальше можно нажать ⌘V. |
+| Мини-калькулятор | Обычные вычисления, проценты, ввод с клавиатуры и копирование результата. Десятичные расчёты через `Decimal`. |
+| Звук | Системная громкость, отключение звука и выбор устройства вывода. Для совместимого внешнего монитора — аппаратная громкость через DDC/CI. |
+| Таймер | Значение меняется горизонтальной прокруткой двумя пальцами по существующей линейке. Отдельного видимого ползунка не добавлено. |
+| Плеер | При воспроизведении наведение раскрывает управление: пауза, воспроизведение, предыдущий/следующий трек, перемотка и громкость. |
+| Доступ к инструментам | Свайп двумя пальцами вверх по плееру открывает инструменты. Воспроизведение продолжается, обновления видео не перехватывают экран. После закрытия острова плеер снова становится экраном по умолчанию. |
+| Два события | Музыка и таймер могут показываться одновременно: основной остров и отдельный индикатор таймера. Каждую часть можно раскрыть отдельно. |
+| Запоминание страницы | Последняя страница сохраняется на пять секунд после закрытия, затем при открытии выбирается первая включённая страница в моём порядке. Открытая страница не сбрасывается. |
+| Русский интерфейс | Дополнен перевод настроек, режимов и уведомлений; в проверенной сборке — 906 строк и 6 форм множественного числа. |
 
-<p align="center">
-  <img src="assets/readme/Player.png" alt="DynamicNotch preview" width="100%" />
-  <img src="assets/readme/LockScreen.png" alt="DynamicNotch preview" width="100%" />
-</p>
+![Скриншоты, калькулятор и управление звуком](assets/community/tools.png)
 
-## 🧐 Why DynamicNotch
+![Раскрытый плеер и отдельный таймер](assets/community/player.png)
 
-The app is built with SwiftUI and AppKit, so the notch window, settings UI, and event handling feel
-like part of macOS rather than a web-style overlay.
+Изображения — отрисовки настоящих SwiftUI-компонентов с тестовыми данными, без личного содержимого экрана.
 
-The difference between this project and others is that it is built on its own engine, and not taken from other ready-made repositories. It completely copies the logic, animations, and behavior of a real Dynamic Island on an iPhone, unlike other projects. 
+## Какие ошибки исправлены
 
-The main goal is to make the project as native as possible, both in terms of design and interaction.
+- Перелистывание могло закрывать остров, хотя курсор оставался внутри. Проверка области взаимодействия теперь получает геометрию от владельца окна, без приведения `NSApp.delegate` к классу приложения: SwiftUI может оборачивать делегат.
+- Страницы пересекались или двигались в разные стороны. Теперь они используют одно вертикальное смещение с пружиной и размытием; отдельные переходы вставки/удаления убраны.
+- Калькулятор обрезался при изменении размеров острова. Высота содержимого и обработка жеста больше не зависят от смещения изменяемого `ScrollView`.
+- После блокировки/разблокировки Mac раскрытие плеера могло завершить приложение с `No ObservableObject of type SoundControlModel found`. Сохранённое второе окно теперь получает те же модели звука и инструментов, что и основное.
+- Завершившиеся музыка и таймер могли снова появиться после окончания анимации сворачивания. При восстановлении учитывается актуальный список событий.
 
-## 🎯 Highlights
+## Скачать и запустить
 
-- **Live Activities**: Now Playing (media control, album artwork, audio visualizer, customizable progress bar tint style), Downloads progress, AirDrop, Timer, Screen Recording indicator, Focus mode, Personal Hotspot, and Lock Screen media/live activity surfaces.
+[Community 1.6.3 — сборка 25.6.2](https://github.com/mortay21rus-hash/DynamicNotch/releases/tag/community-1.6.3-25.6.2)
 
-- **Temporary Alerts**: Interactive HUD status for battery charging, low/full battery, Bluetooth connections, Wi-Fi, VPN, Focus-off toggling, and notch size modification settings feedback.
+Готовая сборка предназначена для **Apple Silicon и macOS 26 или новее**. Она подписана локальной ad-hoc подписью и не нотарифицирована Apple. Если macOS блокирует первый запуск, используйте штатное разрешение запуска в «Системные настройки → Конфиденциальность и безопасность».
 
-- **Gestures & Swipe Controls**: Native interactive gestures including mouse drag, trackpad swipes, vertical swipe-to-dismiss/restore with adaptive corner radii and swipe-aware blur, and horizontal trackpad/mouse scroll-to-dismiss.
+Распакуйте архив и перенесите `DynamicNotch.app` в «Программы». Для запрошенных функций macOS может отдельно запросить разрешения. Старые сборки лучше хранить в ZIP-архивах, чтобы случайно не запускать другую копию с тем же идентификатором приложения.
 
-- **Fluid Physics Animations**: True-to-life replication of the iOS Dynamic Island's motion design, featuring responsive physics-based spring animations, jelly-like morphing transitions, and synchronized content interpolation that matches the stretch, squash, and elastic behavior of Apple's implementation.
+Поддержка DDC зависит от монитора и подключения. Аппаратное изменение громкости проверено на Huawei MateView; универсальная поддержка всех мониторов не заявляется.
 
-- **Dynamic Island (Floating Capsule)**: Automatic support for devices without a physical hardware notch (e.g. non-notched MacBooks, iMac, Mac mini, or external monitors). Transitions to a floating capsule shape (`DynamicIslandShape`) when `topInset == 0`, utilizing dynamic, smooth corner radius transitions.
+## Собрать из исходников
 
-- **Deep Customization**: Personalization options for base notch width/height, stroke options, background styling, animation presets, custom screen/display selection, and fullscreen spaces handling.
-
-## 📦 Installation
-
-1. Download the latest DMG from the [Releases](https://github.com/jackson-storm/DynamicNotch/releases) page.
-2. Drag `DynamicNotch` into `Applications`.
-3. Launch the app.
-4. Grant the permissions needed for the features you want to use.
-5. If macOS blocks the first launch, allow it from `System Settings > Privacy & Security`.
-
-## ✅ Requirements
-
-- macOS 14.6 or later
-- Works on both notched MacBooks and non-notched displays (automatically rendering as a floating Dynamic Island capsule)
-- Feature-specific permissions as needed:
-  - Accessibility for custom HUD interception and some system-level interactions
-  - Bluetooth access for accessory status updates
-  - Screen Recording access for audio-reactive Now Playing visualization where macOS requires it
-  - Media/Now Playing access where macOS requires it
-
-## 🛠️ Build From Source
+Нужны Apple Silicon, macOS 26+, Xcode с SDK macOS 26 и Python 3.
 
 ```bash
-git clone https://github.com/jackson-storm/DynamicNotch.git
+git clone --branch community-tools https://github.com/mortay21rus-hash/DynamicNotch.git
 cd DynamicNotch
-open DynamicNotch.xcodeproj
+python3 scripts/build-community.py
 ```
 
-Then run the `DynamicNotch` scheme from Xcode. Swift Package Manager dependencies are resolved by the project.
+Скрипт собирает Release, создаёт ZIP с приложением и лицензиями, проверяет подпись, записывает SHA-256 и не включает в публичный бинарник путь к домашнему каталогу сборщика. Результат появляется в `build/community/`. Зависимости Swift Package Manager закреплены в `Package.resolved` проекта.
 
-## 💻 Gallery
+## Проверки
 
-<table align="center">
-  <tr>
-    <td><img src="assets/readme/NoInternet.png" alt="No Internet" width="100%" /></td>
-    <td><img src="assets/readme/Tray.png" alt="Tray" width="100%" /></td>
-    <td><img src="assets/readme/Timer.png" alt="Timer" width="100%" /></td>
-  </tr>
-  <tr>
-    <td><img src="assets/readme/Charging.png" alt="Charging" width="100%" /></td>
-    <td><img src="assets/readme/LowBattery.png" alt="Low Battery" width="100%" /></td>
-    <td><img src="assets/readme/FullBattery.png" alt="Full Battery" width="100%" /></td>
-  </tr>
-  <tr>
-    <td><img src="assets/readme/Bluetooth.png" alt="Bluetooth" width="100%" /></td>
-    <td><img src="assets/readme/VpnConnection.png" alt="VPN Connection" width="100%" /></td>
-    <td><img src="assets/readme/VolumeHud.png" alt="Volume HUD" width="100%" /></td>
-  </tr>
-  <tr>
-    <td><img src="assets/readme/Hotspot.png" alt="Hotspot" width="100%" /></td>
-    <td><img src="assets/readme/Downloads.png" alt="Downloads" width="100%" /></td>
-    <td><img src="assets/readme/FocusMode.png" alt="Focus Mode" width="100%" /></td>
-  </tr>
-</table>
+```bash
+bash tests/run-island-tools.sh
+python3 tests/run-navigation-checks.py
+python3 tests/run-activity-checks.py
+python3 tests/run-presentation-checks.py
+```
 
-> **Note:** This gallery displays only a selection of the events, live activities, and temporary alerts supported by DynamicNotch. Many other states, animations, and system transitions are supported.
+Это автономные проверки: вычисления, жесты, геометрия, буфер скриншотов, сценарии движка, пятисекундное запоминание и отрисовка окон. Они не запускают отдельные копии приложения в Dock. При проверке представления заменяются фоновые службы и внешняя обработка жестов; настоящие модели, корневые представления окон и плеер остаются в тесте.
 
-## 🧰 Tech Stack
+На моём Mac отдельно проверены работа плеера с видео, свайп к инструментам, клики и перелистывание. Сценарий сохранённого окна после разблокировки воспроизведён и проверен автоматизированно; полный цикл блокировки/разблокировки после исправления отдельно не подтверждался. Интерактивное выделение области скриншота также не заявляется как полностью автоматизированная проверка.
 
-- SwiftUI for notch content and settings UI
-- AppKit for windows, input handling, and macOS integration
-- Combine for feature and settings streams
-- [Lottie](https://github.com/airbnb/lottie-ios) for animation assets
+## Для авторов оригинала
 
-## 🌍 Localization
+- [Описание изменений, причин ошибок и границ проверки](docs/UPSTREAM_NOTES.md)
+- [Сравнение с исходным коммитом](https://github.com/jackson-storm/DynamicNotch/compare/deacd0f4275c73ae5d3328491d23d0e0dc0f6970...mortay21rus-hash:community-tools)
+- [Исходный README](README.upstream.md)
 
-DynamicNotch features full native localization support for **38+ languages** across interface elements, notch activities, and settings. You can switch languages instantly in the app settings.
+## Авторство и лицензия
 
-## 💖 Support
+Оригинальный DynamicNotch — проект [jackson-storm](https://github.com/jackson-storm/DynamicNotch). Этот форк поддерживается от моего аккаунта [mortay21rus-hash](https://github.com/mortay21rus-hash).
 
-Without your support, the project will not be able to develop. If you would like to support the project, you can do so via:
-
-### Services
-
-- **Boosty**: [Support development or subscribe](https://boosty.to/jacksonstormdev)
-- **Donation Alerts**: [One-time donation via cards or crypto](https://www.donationalerts.com/r/jacksonstormdev)
-
-### Cryptocurrency
-
-- **USDT (TRC-20)**: `TWYo42HQNuXSA5gmVoVV1973ScPqCtduvA`
-- **USDT (ERC-20)**: `0xd3261630d7EC2484A3fcf5315f194B58834ab891`
-- **Bitcoin (BTC)**: `bc1qw29074zwlp600rhvjat2v7ks53h835tthfj7dx`
-
-
-## 🤝 Acknowledgements
-
-Special thanks to the following open-source projects and services that make DynamicNotch possible:
-
-- [Lottie for iOS](https://github.com/airbnb/lottie-ios) — for rendering premium, smooth vector animations.
-- [LRCLIB](https://lrclib.net) — for providing the main engine for synchronized lyrics search.
-- [Lyrics.ovh](https://lyrics.ovh) — for serving as a fallback database for static song lyrics.
-- [mediaremote-adapter](https://github.com/ungive/mediaremote-adapter) — for MediaRemote API integration.
-
-## 📄 License
-
-DynamicNotch is released under the GNU General Public License v3.0. See [LICENSE](LICENSE) for details.
+Код распространяется по [GNU GPL v3](LICENSE). Сведения о сторонних компонентах — в [NOTICE.md](NOTICE.md).

@@ -14,3 +14,7 @@ xcuserdata/
 # Build products
 DerivedData/
 build/
+
+# Local release outputs and Python bytecode
+__pycache__/
+*.pyc
