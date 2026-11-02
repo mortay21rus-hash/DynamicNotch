@@ -48,7 +48,7 @@
 
 ## Собрать из исходников
 
-Нужны Apple Silicon, macOS 26+, Xcode с SDK macOS 26 и Python 3.
+Нужны Apple Silicon, macOS 26+, Xcode с SDK macOS 26 и Python 3.12+.
 
 ```bash
 git clone --branch community-tools https://github.com/mortay21rus-hash/DynamicNotch.git

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import io
 import hashlib
 import json
 from pathlib import Path
@@ -10,6 +11,8 @@ import plistlib
 import shlex
 import shutil
 import subprocess
+import tarfile
+import tempfile
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -36,26 +39,35 @@ def main() -> None:
     if staging.exists() or archive.exists():
         parser.error("Choose a fresh output directory; an existing package will not be overwritten.")
 
-    # These flags also remap #filePath strings used by source-resource fallbacks.
-    # subprocess arguments are passed directly: no shell or command substitution.
-    mappings = [(ROOT, "/src"), (output, "/build"), (packages, "/packages"), (Path.home(), "/home/builder")]
-    flags = ["$(inherited)"]
-    for original, replacement in mappings:
-        mapping = shlex.quote(f"{original}={replacement}")
-        flags.extend(["-file-prefix-map", mapping, "-debug-prefix-map", mapping])
-    command = [
-        "xcodebuild", "-project", "DynamicNotch.xcodeproj", "-scheme", "DynamicNotch",
-        "-configuration", "Release", "-destination", "platform=macOS,arch=arm64",
-        "-derivedDataPath", str(derived), "-clonedSourcePackagesDirPath", str(packages),
-        "-disableAutomaticPackageResolution", "CODE_SIGNING_ALLOWED=NO",
-        "MACOSX_DEPLOYMENT_TARGET=26.0", f"CURRENT_PROJECT_VERSION={BUILD}",
-        "OTHER_SWIFT_FLAGS=" + " ".join(flags), "build",
-    ]
-    log = output / "build.log"
-    with log.open("w") as stream:
-        result = subprocess.run(command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT)
-    if result.returncode:
-        raise SystemExit(f"Build failed. See {log}")
+    status = subprocess.check_output(["git", "status", "--porcelain", "--untracked-files=normal"], cwd=ROOT, text=True)
+    if status.strip():
+        parser.error("Commit or stash working-tree changes before building a public release.")
+    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+    source_archive = subprocess.check_output(["git", "archive", "--format=tar", commit], cwd=ROOT)
+    # Swift's prefix maps do not rewrite #filePath string literals. Build an
+    # export under /tmp as well, so those literals never contain a home path.
+    with tempfile.TemporaryDirectory(prefix="dynamicnotch-community-source-", dir="/tmp") as temporary:
+        source_root = Path(temporary)
+        with tarfile.open(fileobj=io.BytesIO(source_archive)) as sources:
+            sources.extractall(source_root, filter="data")
+        mappings = [(source_root, "/src"), (output, "/build"), (packages, "/packages"), (Path.home(), "/home/builder")]
+        flags = ["$(inherited)"]
+        for original, replacement in mappings:
+            mapping = shlex.quote(f"{original}={replacement}")
+            flags.extend(["-file-prefix-map", mapping, "-debug-prefix-map", mapping])
+        command = [
+            "xcodebuild", "-project", "DynamicNotch.xcodeproj", "-scheme", "DynamicNotch",
+            "-configuration", "Release", "-destination", "platform=macOS,arch=arm64",
+            "-derivedDataPath", str(derived), "-clonedSourcePackagesDirPath", str(packages),
+            "-disableAutomaticPackageResolution", "CODE_SIGNING_ALLOWED=NO",
+            "MACOSX_DEPLOYMENT_TARGET=26.0", f"CURRENT_PROJECT_VERSION={BUILD}",
+            "OTHER_SWIFT_FLAGS=" + " ".join(flags), "build",
+        ]
+        log = output / "build.log"
+        with log.open("w") as stream:
+            result = subprocess.run(command, cwd=source_root, stdout=stream, stderr=subprocess.STDOUT)
+        if result.returncode:
+            raise SystemExit(f"Build failed. See {log}")
 
     built = derived / "Build/Products/Release/DynamicNotch.app"
     info = plistlib.loads((built / "Contents/Info.plist").read_bytes())
@@ -72,7 +84,6 @@ def main() -> None:
     run(["codesign", "--verify", "--deep", "--strict", str(app)])
     shutil.copyfile(ROOT / "LICENSE", staging / "LICENSE")
     shutil.copyfile(ROOT / "NOTICE.md", staging / "NOTICE.md")
-    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     manifest = {
         "repository": REPOSITORY,
         "source": f"{REPOSITORY}/tree/{commit}",

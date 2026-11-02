@@ -25,7 +25,7 @@ I use DynamicNotch on my Mac and wanted quick access to screenshots, a calculato
 
 The [community build](https://github.com/mortay21rus-hash/DynamicNotch/releases/tag/community-1.6.3-25.6.2) targets **Apple Silicon and macOS 26+**. It is ad-hoc signed, not Apple-notarized. Use the normal macOS Privacy & Security approval if Gatekeeper blocks the first launch. Keep only the intended app copy in Applications; store older builds as ZIP archives.
 
-To build with Xcode's macOS 26 SDK and Python 3:
+To build with Xcode's macOS 26 SDK and Python 3.12+:
 
 ```bash
 git clone --branch community-tools https://github.com/mortay21rus-hash/DynamicNotch.git
